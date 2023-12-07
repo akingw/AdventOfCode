@@ -4,7 +4,13 @@ input = readLines("Day3Input.txt")
 
 input2 = gsub("\\.","a",input)
 
-markers = str_locate_all(input2,"[:punct:]")
+# [:punct:] doesn't match "=", despite the documentation for stringr 
+# saying otherwise...
+str_locate("=test!","[:punct:]")
+str_locate("=test!","[:punct:]|=")
+
+#markers = str_locate_all(input2,"[:punct:]")
+markers = str_locate_all(input2,"[:punct:]|=")
 
 i = 0
 adjacent = tibble(x=numeric(),
@@ -41,7 +47,7 @@ for(line in numbers){
                y==y_val) %>%
         nrow()
       if(nr > 0){
-        print(paste0("Adding ",num," to sum"))
+        # print(paste0("Adding ",num," to sum"))
         matched = T
         sum = sum + num
       }
