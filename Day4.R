@@ -8,8 +8,15 @@ input = readLines("Day4Input.txt")
 #"Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36",
 #"Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 # Winning | Yours
-sum = 0
-for(line in input){
+
+counted = 0
+countCards = function(indices = c(1:length(input)),
+                      part = 'part1'){
+print(paste0("Have a list of ",length(indices)," to work through"))
+nextRun = c()
+for(i in indices){
+  counted <<- counted + 1
+  line = input[i]
   vals = str_split(line,":|\\|")
   win = vals[[1]][2] %>%
     str_split("\\s+")
@@ -25,10 +32,29 @@ for(line in input){
   
   match = sum(yours %in% winning)
   if(match == 0){next}
-  expVal = match - 1
-  cardVal = 2^expVal
-  
-  sum = sum + cardVal
+  if(part == 'part1'){
+    expVal = match - 1
+    cardVal = 2^expVal
+    sum <<- sum + cardVal
+  } else {
+    cardsWon = c((i+1):(i+match))
+    nextRun = append(nextRun,cardsWon)
+  }
 }
+ if(part != 'part1'){
+   countCards(indices = nextRun,
+            part = 'part2')}
+ #sum
+ #nextRun
+}
+
+indices = c(1:length(input))
+sum = 0
+countCards()
 print(sum)
-#23768 too high
+
+counted = 0
+countCards(part='part2')
+
+#23768 too high 
+
