@@ -6,8 +6,6 @@ input2 = gsub("\\.","a",input)
 
 markers = str_locate_all(input2,"[:punct:]")
 
-sum = 0
-
 i = 0
 adjacent = tibble(x=numeric(),
                   y=numeric())
@@ -24,6 +22,7 @@ for(line in markers){
 }
 
 i = 0
+sum = 0
 numbers = str_locate_all(input2,"\\d+")
 for(line in numbers){
   i = i + 1
@@ -34,6 +33,7 @@ for(line in numbers){
     matched = F
     num = as.numeric(str_sub(input2[i],begin,end))
     for(k in c(begin:end)){
+      if(matched){next}
       x_val = k
       y_val = i
       nr = adjacent %>%
@@ -41,13 +41,15 @@ for(line in numbers){
                y==y_val) %>%
         nrow()
       if(nr > 0){
+        print(paste0("Adding ",num," to sum"))
         matched = T
         sum = sum + num
       }
     }
-    if(matched){next}
   }
 }
 print(sum)
+
+#470101 too low :/
 #835344 too high
 #782504 too high
