@@ -11,7 +11,8 @@ str_locate("=test!","[:punct:]|=")
 
 #markers = str_locate_all(input2,"[:punct:]")
 #markers = str_locate_all(input2,"[:punct:]|=")
-markers = str_locate_all(input2,"[:punct:]|=|\\$|\\^")
+#markers = str_locate_all(input2,"[:punct:]|=|\\$|\\^")
+markers = str_locate_all(input2,"@|\\*|\\$|-|#|=|%|\\+|\\/")
 
 i = 0
 adjacent = tibble(x=numeric(),
@@ -30,7 +31,8 @@ for(line in markers){
 
 i = 0
 sum = 0
-added = tibble(val  =numeric())
+added = tibble(val  =numeric(),
+               row = numeric())
 numbers = str_locate_all(input2,"\\d+")
 for(line in numbers){
   i = i + 1
@@ -49,7 +51,8 @@ for(line in numbers){
                y==y_val) %>%
         nrow()
       if(nr > 0){
-        added = added %>% add_row(val = num)
+        # Added to spot check after running
+        added = added %>% add_row(val = num, row = i)
 #        print(paste0("Adding ",num," to sum"))
         matched = T
         sum = sum + num
@@ -59,6 +62,7 @@ for(line in numbers){
 }
 print(sum)
 
+#512512 wrong
 #493609 wrong
 #470101 too low :/
 #835344 too high
