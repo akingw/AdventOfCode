@@ -9,10 +9,15 @@ input2 = gsub("\\.","a",input)
 str_locate("=test!","[:punct:]")
 str_locate("=test!","[:punct:]|=")
 
+# Make a list of the symbols used:
+arr = gsub("\\d+","",gsub("\\.","",input)) %>% paste0(collapse="") %>%
+  str_split(pattern="")
+used = arr[[1]] %>% unique()
+
 #markers = str_locate_all(input2,"[:punct:]")
 #markers = str_locate_all(input2,"[:punct:]|=")
 #markers = str_locate_all(input2,"[:punct:]|=|\\$|\\^")
-markers = str_locate_all(input2,"@|\\*|\\$|-|#|=|%|\\+|\\/")
+markers = str_locate_all(input2,"@|&|\\*|\\$|-|#|=|%|\\+|\\/")
 
 i = 0
 adjacent = tibble(x=numeric(),
@@ -62,6 +67,7 @@ for(line in numbers){
 }
 print(sum)
 
+#508074 wrong
 #512512 wrong
 #493609 wrong
 #470101 too low :/
