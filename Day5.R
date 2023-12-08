@@ -30,7 +30,7 @@ for(line in input){
       source = source,
       sourceId = str_which(source, sourceList),
       sourceStart = match[2],
-      sourceEnd = match[2] + match[3],
+      sourceEnd = match[2] + match[3]-1,
       sourceAdd = match[1] - match[2],
       destStart = sourceStart + sourceAdd,
       destEnd = sourceEnd + sourceAdd
@@ -94,7 +94,8 @@ mapRange = function(id = 0,
     rangeStart = numeric(),
     rangeLen = numeric(),
     mapId = numeric(),
-    inpId = numeric()
+    inpId = numeric(),
+    logicId = numeric()
   )
   print(paste0("Mapping from ",id," to ",id+1))
   # Get the map for this level
@@ -118,10 +119,20 @@ mapRange = function(id = 0,
           rangeStart = rStart + mapAdd,
           rangeLen = rLen,
           mapId = j,
-          inpId = i)
+          inpId = i,
+          logicId = 1)
         # don't need to look at other maps for this inpRange
         break
-
+        
+      # Range starts before and ends after map
+      } else if(mStart>=rStart & mEnd<=rEnd){
+        outRanges = outRanges %>% add_row(
+          rangeStart = mStart + mapAdd,
+          rangeLen = mEnd-mStart+1,
+          mapId = j,
+          inpId = i,
+          logicId = 4
+        )
       # Range starts before, but overlaps map, starting at mStart
       } else if(mStart>=rStart & mStart<=rEnd){
         # Calculate length of new range
@@ -130,7 +141,8 @@ mapRange = function(id = 0,
           rangeStart = mStart + mapAdd,
           rangeLen = newLen,
           mapId = j,
-          inpId = i
+          inpId = i,
+          logicId = 2
         )
         
       # Range starts within, and ends after
@@ -140,18 +152,11 @@ mapRange = function(id = 0,
           rangeStart = rStart + mapAdd,
           rangeLen = newLen,
           mapId = j,
-          inpId = i
+          inpId = i,
+          logicId = 3
         )
         
-      # Range starts before and ends after map
-      } else if(mStart>=rStart & mEnd<=rEnd){
-        outRanges = outRanges %>% add_row(
-          rangeStart = mStart + mapAdd,
-          rangeLen = mEnd-mStart+1,
-          mapId = j,
-          inpId = i
-        )
-      }
+      } 
       # That should be all the options
     }
   }
@@ -165,3 +170,4 @@ for(k in 1:7){
   rangesToMap = mapRange(k,rangesToMap)
 }
 
+print(paste0("Part 2: ",rangesToMap$rangeStart %>% min()))
