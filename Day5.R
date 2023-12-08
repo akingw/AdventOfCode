@@ -36,15 +36,20 @@ for(line in input){
   }
 }
 mapNext = function(id = 0, startIdx = 0){
-  inp = mapInfo %>% filter(sourceId == id) %>%
-    select(source) %>% unique()
-  idxMod = mapInfo %>%
+  modRow = mapInfo %>%
     filter(sourceId == id,
            sourceStart <= startIdx,
-           sourceEnd >= startIdx) %>%
-    pull(sourceAdd)
+           sourceEnd >= startIdx)
+  if(nrow(modRow)==0){
+    idxMod = 0
+  } else{
+    idxMod = modRow %>% 
+      pull(sourceAdd)
+  }
   outIdx = startIdx + idxMod
   output = c(id+1, outIdx)
+  print(paste0(sourceList[id]," at ",startIdx, ' goes to ',
+               sourceList[id+1],' at ',outIdx))
   output
 }
 
@@ -61,6 +66,7 @@ for(seed in seeds){
   if(startIdx < minLoc){
     minLoc = startIdx
   }
+  sourceId = 1
 }
 print(paste0("Part 1: ",minLoc))
 
