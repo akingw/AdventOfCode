@@ -2,7 +2,7 @@ library(tidyverse)
 
 input = readLines("Day5Input.txt")
 
-inp_al = paste(input,collapse = "")
+inp_all = paste(input,collapse = "")
 words = str_match_all(inp_all,"([a-z]{1,})-to-([a-z]{1,})")[[1]]
 sourceList = c(words[,2:3]) %>% unique()
 
@@ -48,8 +48,8 @@ mapNext = function(id = 0, startIdx = 0){
   }
   outIdx = startIdx + idxMod
   output = c(id+1, outIdx)
-  print(paste0(sourceList[id]," at ",startIdx, ' goes to ',
-               sourceList[id+1],' at ',outIdx))
+#  print(paste0(sourceList[id]," at ",startIdx, ' goes to ',
+#               sourceList[id+1],' at ',outIdx))
   output
 }
 
@@ -71,3 +71,11 @@ for(seed in seeds){
 print(paste0("Part 1: ",minLoc))
 
 #26912583 too low
+
+# Part 2 keeps the same mapping, just update the list of seeds to look at.
+seedsLong = tibble(
+  seedStart = seeds[seq(1,length(seeds),2)],
+  seedNum = seeds[seq(2,length(seeds),2)]
+) 
+print(paste0("Don't want to go through ",sum(seedsLong$seedNum),
+             " seeds, so doing something else..."))
