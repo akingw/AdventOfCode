@@ -1,12 +1,7 @@
 library(tidyverse)
 
 input = readLines("Day4Input.txt")
-#input = c("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53",
-#"Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19",
-#"Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1",
-#"Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83",
-#"Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36",
-#"Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
+
 # Winning | Yours
 
 counted = 0
@@ -53,8 +48,64 @@ sum = 0
 countCards()
 print(sum)
 
-counted = 0
-countCards(part='part2')
-
 #23768 too high 
 
+counted = 0
+# Will leave function, because it was interesting, but dont run this
+#countCards(part='part2')
+
+
+# Part 2 attempt 2
+cardData = tibble(
+  cardId = c(1:length(input)),
+  cardWins = 0
+)
+i = 0
+for(line in input){
+  i = i + 1
+  vals = str_split(line,":|\\|")
+  win = vals[[1]][2] %>%
+    str_split("\\s+")
+  winning = win[[1]] %>%
+    as.numeric()
+  winning = winning[!is.na(winning)]
+  
+  you = vals[[1]][3] %>%
+    str_split("\\s+")
+  yours = you[[1]] %>%
+    as.numeric()
+  yours = yours[!is.na(yours)]
+  
+  match = sum(yours %in% winning)
+  if(match == 0){next}
+  cardData = cardData %>%
+    mutate(cardWins = case_when(
+      cardId == i ~ match,
+      T ~ cardWins))
+}
+
+cardData = cardData %>%
+  mutate(cardAdds = 0)
+
+for(i in rev(c(1:length(input)))){
+  newAdds = 1
+  winList = c()
+  wins = cardData %>%
+    filter(cardId == i) %>%
+    pull(cardWins)
+  if(wins > 0){
+    winList = c((i+1):(i+wins))
+  }
+  for(newCard in winList){
+    newAdds = cardData %>%
+      filter(cardId == newCard) %>%
+      pull(cardAdds) +
+      newAdds
+  }
+  cardData = cardData %>%
+    mutate(cardAdds = case_when(
+      cardId == i ~ newAdds,
+      T ~ cardAdds))
+}
+
+print(sum(cardData$cardAdds))
