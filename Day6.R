@@ -22,3 +22,27 @@ for(i in 1:length(times)){
   ways = append(ways,num_way)
 }
 print(paste0("Part 1: ", prod(ways)))
+
+time2 = as.numeric(paste0(times,collapse=""))
+dist2 = as.numeric(paste0(dists,collapse=""))
+
+# This turns into doing math, more than coding it out
+# Distance = Hold * (maxT - Hold)
+# D = H * (T-H)
+# D = H*T - H^2
+# 0 = H*T -H^2 - D
+# 0 = -H^2 + H*T - D
+# 0 = a*x^2 + b*x + c
+
+# x = (-b +/- sqrt(b^2 -4ac))/2a 
+## to the tune of Smedley singing Iron Man ##
+a = -1
+b = time2
+c = -dist2
+x1 = floor((-b + sqrt(b^2 - 4*a*c))/(2*a))
+x2 = ceiling((-b - sqrt(b^2 - 4*a*c))/(2*a))
+
+# from wolfram alpha: 
+# minus 1 since need to beat the distance, not match it
+print(paste0("Part 2: ",(x2-x1)-1))
+
