@@ -9,22 +9,30 @@ make_tree = function(inStr = ""){
   sumDiff = Inf
   i = 1
   # Using matrix instead of tibble since tibbles need names
+  # Splits input into array of values, and reverses the list
+  # This lets the first non-NAs be the 'last' entry.
   diffTree = matrix(as.numeric(rev(str_split(inStr, " ")[[1]])))
   while(sumDiff != 0){
+    # make a new column that is the difference
     diffTree = cbind(diffTree,
                      lag(diffTree[,i])-diffTree[,i])
     i = i + 1
+    # repeat until the total difference is 0
     sumDiff = sum(diffTree[,i],na.rm=T)
   }
+  # Return the maxtrix
   diffTree
 }
 
 find_next = function(tree = matrix()){
   lasts = c()
+  # for every column in the matrix, remove NAs, and pull out the first value
   for(i in 1:ncol(tree)){
     lasts = append(lasts,
                    na.omit(tree[,i])[1])
   }
+  # Sum of all the 'next' values, that is the same as doing it one at a time
+  # like the example says.
   sum(lasts)
 }
 
@@ -32,12 +40,17 @@ sum_new = 0
 ind = 0
 for(line in input){
   ind = ind + 1
+  # make the tree (matrix)
   diff_tree = make_tree(line)
+  # Find the next value for the input
   tree_next = find_next(diff_tree)
   sum_new = sum_new + tree_next
+  
+  # Print info for spot checking
   print(paste0("Next for ",ind," is ",tree_next,
                ". New tot is ",sum_new))
 }
+
 print(paste0("Part 1: ",sum_new))
 #1980766090 too high - incorrectly using max
 #1974913982 too high - didn't zero out sum before running
