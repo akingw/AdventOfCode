@@ -4,21 +4,21 @@ input = readLines("Day9Input.txt")
 #input = c("0 3 6 9 12 15",
 #"1 3 6 10 15 21",
 #"10 13 16 21 30 45")
-
+dTrees = vector(mode = 'list',length= length(input))
 make_tree = function(inStr = ""){
-  sumDiff = Inf
+  allZero = F
   i = 1
   # Using matrix instead of tibble since tibbles need names
   # Splits input into array of values, and reverses the list
   # This lets the first non-NAs be the 'last' entry.
   diffTree = matrix(as.numeric(rev(str_split(inStr, " ")[[1]])))
-  while(sumDiff != 0){
+  while(!allZero){
     # make a new column that is the difference
     diffTree = cbind(diffTree,
                      lag(diffTree[,i])-diffTree[,i])
     i = i + 1
     # repeat until the total difference is 0
-    sumDiff = sum(diffTree[,i],na.rm=T)
+    allZero = max(diffTree[,i],na.rm=T) == min(diffTree[,i],na.rm=T)
   }
   # Return the maxtrix
   diffTree
@@ -42,6 +42,7 @@ for(line in input){
   ind = ind + 1
   # make the tree (matrix)
   diff_tree = make_tree(line)
+  dTrees[[ind]] = diff_tree
   # Find the next value for the input
   tree_next = find_next(diff_tree)
   sum_new = sum_new + tree_next
