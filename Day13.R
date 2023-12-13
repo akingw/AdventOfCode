@@ -1,5 +1,3 @@
-input = readLines("Day13Input.txt")
-
 # ash is .
 # rocks are #
 
@@ -19,6 +17,8 @@ input = c("#.##..##.",
 "..##..###",
 "#....#..#",
 "")
+
+input = readLines("Day13Input.txt")
 
 # sum left of vertical plus 100*above horizontal
 
@@ -72,6 +72,48 @@ checkH1 = function(group,nOff = 0,
   possibleR
 }
 
+checkH2 = function(group,nOff = 0,
+                   possibleR = 1:(nrow(group)-1)){
+  nc = ncol(group)
+  nr = nrow(group)
+  #possibleR = 1:(nr-1)
+  for(r in 1:(nr-1)){
+    if(!(r %in% possibleR)){next}
+    if(r-nOff < 1 | r+nOff > (nr-1)){next}
+    #print(paste0("checking row ",r," with offset of ",nOff))
+    for(c in 1:nc){
+      if(group[(r-nOff),c] != group[(r+1+nOff),c]){
+       #print('here')
+        offBy <<- offBy %>% add_row(
+          "HV" = "H",
+          "mirrorAt" = r,
+          "nOff" = nOff)
+      }
+    }
+  }
+}
+
+checkV2 = function(group,nOff = 0,
+                   possibleC = 1:(ncol(group)-1)){
+  # print(possibleC)
+  nc = ncol(group)
+  nr = nrow(group)
+  #possibleC = 1:(nc-1)
+  for(c in 1:(nc-1)){
+    if(!(c %in% possibleC)){next}
+    if(c-nOff < 1 | c+nOff > (nc-1)){next}
+    #print(paste0("checking column ",c," with offset of ",nOff))
+    for(r in 1:nr){
+      if(group[r,(c-nOff)] != group[r,(c+1+nOff)]){
+        offBy <<- offBy %>% add_row(
+          "HV" = "V",
+          "mirrorAt" = c,
+          "nOff" = nOff)
+      }
+    }
+  }
+}  
+
 ngrps = sum(grepl("^[[:blank:]]*$",input))+1
 groups = vector(mode = 'list', length = ngrps)
 j = 1
@@ -100,3 +142,31 @@ for(grp in groups){
 
 print(paste0("Part 1: ",ans1))
 # 33047
+
+ans2 = 0
+z = 0
+for(grp in groups){
+  z = z + 1
+  print(paste0("Group ",z))
+  offBy = tibble(
+    "HV" = character(),
+    "mirrorAt" = numeric(),
+    "nOff" = numeric())
+  for(i in 0:(nrow(grp)/2)){
+    checkH2(grp,i)
+  }
+  for(i in 0:(ncol(grp)/2)){
+    checkV2(grp,i)
+  }
+  smudge = offBy %>%
+    group_by(HV,mirrorAt) %>% 
+    mutate(n=n()) %>% 
+    filter(n == 1)
+  if(smudge$HV == "H"){
+    ans2 = ans2 + 100 *smudge$mirrorAt
+  } else{
+    ans2 = ans2 + smudge$mirrorAt
+  }
+}
+
+print(paste0("Part 2: ",ans2))
