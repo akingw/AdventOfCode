@@ -4,7 +4,7 @@ def check_xmas(coords):
     for coord in coords:
         for val in coord:
             if val < 0:
-                print(f"Negative: {val}")
+                #print(f"Negative: {val}")
                 return False
     try:
         if day4_input[coords[0][0]][coords[0][1]] != "X":
@@ -47,3 +47,36 @@ print(f"Part 1: {numXMAS}")
 # 2668 is too high
 # 2660 also too high
 # 2654 Correct
+
+# part 2
+def check_cross(r,c):
+    coords = [[r-1,c-1],
+              [r-1,c+1],
+              [r+1,c-1],
+              [r+1,c+1]]
+    letArr = []
+    try:
+        for coord in coords:
+            if coord[0] < 0 or coord[1] < 0:
+                return 0
+            letArr.append(day4_input[coord[0]][coord[1]])
+        letStr = "".join(letArr)
+        ms = re.findall(r'[MS]',letStr)
+        if len(ms) < 4:
+            return 0
+        elif ms[0] == ms[3] or ms[1] == ms[2]:
+            return 0
+        elif len(re.findall(r'M',letStr)) != len(re.findall(r'S',letStr)):
+            return 0
+        return 1
+    except:
+        return 0
+
+
+numCross = 0
+for r,row in enumerate(day4_input):
+    for c,letter in enumerate(row):
+        if day4_input[r][c] == "A":
+            numCross += check_cross(r,c)
+
+print(numCross)
