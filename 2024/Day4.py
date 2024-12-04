@@ -1,10 +1,11 @@
 import re
 # Read in the data
 def check_xmas(coords):
-    if(coords[1][0]) < 0:
-        return False
-    elif(coords[1][1]) < 0:
-        return False
+    for coord in coords:
+        for val in coord:
+            if val < 0:
+                print(f"Negative: {val}")
+                return False
     try:
         if day4_input[coords[0][0]][coords[0][1]] != "X":
             return False
@@ -16,7 +17,7 @@ def check_xmas(coords):
             return False
         return True
     except:
-        print(f'out of range at {r},{c}')
+        #print(f'out of range at {r},{c}')
         return False
 
 
@@ -45,3 +46,4 @@ print(f"Part 1: {numXMAS}")
 
 # 2668 is too high
 # 2660 also too high
+# 2654 Correct
