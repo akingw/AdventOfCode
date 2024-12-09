@@ -22,7 +22,7 @@ def add_mult_cat(ans,num1,nums, ind, eqn_match2):
     add_mult_cat(ans,int(str(num1) + str(nums[0])), nums[1:], ind, eqn_match2)
 
 equations = []
-with open(os.path.join(os.path.dirname(__file__),'Day6Input.txt'),'r') as data:
+with open(os.path.join(os.path.dirname(__file__),'Day7Input.txt'),'r') as data:
     for line in data:
         equations.append(line)
 
