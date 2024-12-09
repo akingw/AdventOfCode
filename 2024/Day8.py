@@ -47,4 +47,35 @@ for node in antiNodes1:
 print(len(antiNodes1Ans))
 # 240 is correct
 
+def get_resonance(a1,a2,nodes):
+    pos = True
+    inRange = True
+    rd = a2[0] - a1[0]
+    cd = a2[1] - a1[1]
+    node = [a2[0],a2[1]]
+    while inRange:
+        node = [node[0] + rd, node[1] + cd]
+        if node[0] in range(0,nr) and node[1] in range(0,nc):
+            nodes.append(node)
+        elif pos:
+            rd = rd * -1
+            cd = cd * -1
+            pos = False
+        else:
+            inRange = False
+    
+
 #part 2...
+antiNodes2 = []
+for let in ants:
+    for i,ant1 in enumerate(ants[let]):
+        for j in range(i+1,len(ants[let])):
+            ant2 = ants[let][j]
+            antiNodes2.append(ant1)
+            antiNodes2.append(ant2)
+            get_resonance(ant1,ant2,antiNodes2)
+
+part2_nodes = [list(x) for x in set(tuple(x) for x in antiNodes2)]
+
+print(f"Part 2: {len(part2_nodes)}")
+# 955 is correct
